@@ -2,12 +2,14 @@
 # This is a comment. Commands start with <meta>!, e.g.:
 #!size 16 16
 # The above command defines the output image size in pixels
+# Any <meta>!<character><space><colorhex> defines a color for a given character:
 #!r #FF0000FF
+#!g #00FF00FF
 #!b #0000FFFF
 #!y #FFFF00FF
 #!  #00000000
 #!0 #000000FF
-# Any <meta>!<character><space><colorhex> defines a color for a given character,
+# This is the actual image data:
 0000000000000000
 0000000000000000
 00            rr
@@ -15,8 +17,8 @@
 00 byyb   yy  rr
 00 byyb   yy  rr
 00  bb    yy  rr
-00            rr
-00            rr
+00     gg     rr
+00     gg     rr
 00  bb    yy  rr
 00 byyb   yy  rr
 00 byyb   yy  rr
