@@ -1,5 +1,5 @@
 # The first character defines the 'meta' character preceeding commands and comments, e.g. '#'
-# Commands start with <meta>!, e.g.:
+# This is a comment. Commands start with <meta>!, e.g.:
 #!size 16 16
 # The above command defines the output image size in pixels
 #!r #FF0000FF
