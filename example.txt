@@ -16,10 +16,10 @@
 00  bb    yy  rr
 00 byyb   yy  rr
 00 byyb   yy  rr
-00  bb    yy  rr
-00     gg     rr
-00     gg     rr
-00  bb    yy  rr
+00  bb0000yy  rr
+00    0gg0    rr
+00    0gg0    rr
+00  bb0000yy  rr
 00 byyb   yy  rr
 00 byyb   yy  rr
 00  bb    yy  rr
