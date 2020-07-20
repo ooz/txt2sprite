@@ -2,6 +2,13 @@
 
 Text to 2D image converter
 
+## Advantages
+
+* Create images when developing on terminal-only system (e.g. Android Termux)
+* Easily swap color palettes
+* Pipeline-friendly
+* Open for extension: sprite sheets, animation and further meta data
+
 ## Syntax
 
 See [example.txt](example.txt).
