@@ -88,9 +88,9 @@ if __name__ == "__main__":
     parser = AP.ArgumentParser(description="Text to 2D image converter.")
     parser.add_argument("-o", "--outfile",
                         type=str, default="stdin.png",
-                        help="Output filename. Defaults to 'stdin.png'.")
+                        help="Output file. Defaults to 'stdin.png' if the input is text, or 'stdin.txt' if the input is an image.")
     parser.add_argument("-i", "--infile",
                         type=str, default="",
-                        help="Input filename. Defaults to reading from stdin.")
+                        help="Input file. Defaults to reading from stdin.")
     args = parser.parse_args()
     main(args)
