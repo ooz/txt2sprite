@@ -66,49 +66,51 @@ def write_image(image_data, filename):
     img = Image.fromarray(image_data)
     img.save(filename)
 
+def text2image(args):
+    lines = []
+    if len(args.infile):
+        lines = file_readlines(args.infile)
+    else:
+        lines = stdin_readlines()
+    meta = parse_meta(lines)
+    lines = filter_meta_lines(lines, meta)
+    image_data = convert(lines, meta)
+    write_image(image_data, args.outfile)
+
 DEFAULT_META_CHAR = '#'
 LOWER_CHARS = 'abcdefghijklmnopqrstuvwxyz'
 ALPHABET = LOWER_CHARS + LOWER_CHARS.upper() + \
     '0123456789' + \
     '!"§$%&/()=?{[]}+-_,.;:*~@<>|^°'
 ALPHABET_SIZE = len(ALPHABET)
-def main(args):
-    if is_image_file(args.infile):
-        pass
-        img = Image.open(args.infile)
-        print(DEFAULT_META_CHAR)
-        print(render_command_line('size', f'{img.size[0]} {img.size[1]}'))
-        pixels = img.load()
-        lines = []
-        colors = {}
-        alphabet_index = 0
-        for y in range(img.size[1]):
-            line = ''
-            for x in range(img.size[0]):
-                hex_color = rgba2hex(pixels[x, y])
-                letter = colors.get(hex_color, None)
-                if letter is None:
-                    assert alphabet_index < ALPHABET_SIZE, \
-                        f'Image has more than {ALPHABET_SIZE} supported colors! Preprocess the image to reduce its palette or add characters to ALPHABET in the script!'
-                    colors[hex_color] = ALPHABET[alphabet_index % ALPHABET_SIZE]
-                    letter = ALPHABET[alphabet_index % ALPHABET_SIZE]
-                    alphabet_index += 1
-                line = line + letter
-            lines.append(line)
-        for color in colors.keys():
-            letter = colors[color]
-            print(render_command_line(letter, color))
-        print('\n'.join(lines))
-    else:
-        lines = []
-        if len(args.infile):
-            lines = file_readlines(args.infile)
-        else:
-            lines = stdin_readlines()
-        meta = parse_meta(lines)
-        lines = filter_meta_lines(lines, meta)
-        image_data = convert(lines, meta)
-        write_image(image_data, args.outfile)
+def image2text(args):
+    img = Image.open(args.infile)
+    print(DEFAULT_META_CHAR)
+    print(render_command_line('size', f'{img.size[0]} {img.size[1]}'))
+    pixels = img.load()
+    lines = []
+    colors = {}
+    alphabet_index = 0
+    for y in range(img.size[1]):
+        line = ''
+        for x in range(img.size[0]):
+            hex_color = rgba2hex(pixels[x, y])
+            letter = colors.get(hex_color, None)
+            if letter is None:
+                assert alphabet_index < ALPHABET_SIZE, \
+                    f'Image has more than {ALPHABET_SIZE} supported colors! Preprocess the image to reduce its palette or add characters to ALPHABET in the script!'
+                colors[hex_color] = ALPHABET[alphabet_index % ALPHABET_SIZE]
+                letter = ALPHABET[alphabet_index % ALPHABET_SIZE]
+                alphabet_index += 1
+            line = line + letter
+        lines.append(line)
+    for color in colors.keys():
+        letter = colors[color]
+        print(render_command_line(letter, color))
+    print('\n'.join(lines))
+
+def render_command_line(command, data):
+    return f'''{DEFAULT_META_CHAR}!{command} {data}'''
 
 def file_readlines(path):
     with open(path, 'r') as f:
@@ -126,10 +128,11 @@ def is_image_file(path):
         path.endswith('.jpg') or \
         path.endswith('.jepg')
 
-def render_command_line(command, data):
-    return f'''{DEFAULT_META_CHAR}!{command} {data}'''
-
-
+def main(args):
+    if is_image_file(args.infile):
+        image2text(args)
+    else:
+        text2image(args)
 
 if __name__ == "__main__":
     parser = AP.ArgumentParser(description="Text to 2D image converter.")
