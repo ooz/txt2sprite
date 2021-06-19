@@ -59,20 +59,56 @@ def hex2rgba(hex):
     hex = hex.lstrip('#').upper()
     return [int(hex[i:i+2], 16) for i in [0, 2, 4, 6]]
 
+def rgba2hex(rgba):
+    return '#' + ('%02x%02x%02x%02x' % rgba).upper()
+
 def write_image(image_data, filename):
     img = Image.fromarray(image_data)
     img.save(filename)
 
+DEFAULT_META_CHAR = '#'
+LOWER_CHARS = 'abcdefghijklmnopqrstuvwxyz'
+ALPHABET = LOWER_CHARS + LOWER_CHARS.upper() + \
+    '0123456789' + \
+    '!"§$%&/()=?{[]}+-_,.;:*~@<>|^°'
+ALPHABET_SIZE = len(ALPHABET)
 def main(args):
-    lines = []
-    if len(args.infile):
-        lines = file_readlines(args.infile)
+    if is_image_file(args.infile):
+        pass
+        img = Image.open(args.infile)
+        print(DEFAULT_META_CHAR)
+        print(render_command_line('size', f'{img.size[0]} {img.size[1]}'))
+        pixels = img.load()
+        lines = []
+        colors = {}
+        alphabet_index = 0
+        for y in range(img.size[1]):
+            line = ''
+            for x in range(img.size[0]):
+                hex_color = rgba2hex(pixels[x, y])
+                letter = colors.get(hex_color, None)
+                if letter is None:
+                    assert alphabet_index < ALPHABET_SIZE, \
+                        f'Image has more than {ALPHABET_SIZE} supported colors! Preprocess the image to reduce its palette or add characters to ALPHABET in the script!'
+                    colors[hex_color] = ALPHABET[alphabet_index % ALPHABET_SIZE]
+                    letter = ALPHABET[alphabet_index % ALPHABET_SIZE]
+                    alphabet_index += 1
+                line = line + letter
+            lines.append(line)
+        for color in colors.keys():
+            letter = colors[color]
+            print(render_command_line(letter, color))
+        print('\n'.join(lines))
     else:
-        lines = stdin_readlines()
-    meta = parse_meta(lines)
-    lines = filter_meta_lines(lines, meta)
-    image_data = convert(lines, meta)
-    write_image(image_data, args.outfile)
+        lines = []
+        if len(args.infile):
+            lines = file_readlines(args.infile)
+        else:
+            lines = stdin_readlines()
+        meta = parse_meta(lines)
+        lines = filter_meta_lines(lines, meta)
+        image_data = convert(lines, meta)
+        write_image(image_data, args.outfile)
 
 def file_readlines(path):
     with open(path, 'r') as f:
@@ -84,11 +120,22 @@ def stdin_readlines():
         lines.append(line)
     return lines
 
+def is_image_file(path):
+    return path.endswith('.png') or \
+        path.endswith('.bmp') or \
+        path.endswith('.jpg') or \
+        path.endswith('.jepg')
+
+def render_command_line(command, data):
+    return f'''{DEFAULT_META_CHAR}!{command} {data}'''
+
+
+
 if __name__ == "__main__":
     parser = AP.ArgumentParser(description="Text to 2D image converter.")
     parser.add_argument("-o", "--outfile",
                         type=str, default="stdin.png",
-                        help="Output file. Defaults to 'stdin.png' if the input is text, or 'stdin.txt' if the input is an image.")
+                        help="Output file. Defaults to 'stdin.png' if the input is text, or stdout if the input is an image.")
     parser.add_argument("-i", "--infile",
                         type=str, default="",
                         help="Input file. Defaults to reading from stdin.")
