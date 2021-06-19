@@ -21,12 +21,18 @@ See [example.txt](example.txt).
 pipenv install
 ```
 
-2. Pipe the text file into the program
+2. Render a text file
 
 ```
 pipenv run python . < example.txt
 ```
 
-The output is written to `stdin.png`:
+or
+
+```
+pipenv run python . -i example.txt
+```
+
+The output is written to `stdin.png` (can be overridden with `-o` parameter):
 
 ![Result](stdin.png)

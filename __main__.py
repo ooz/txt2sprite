@@ -65,17 +65,32 @@ def write_image(image_data, filename):
 
 def main(args):
     lines = []
-    for line in sys.stdin:
-        lines.append(line)
+    if len(args.infile):
+        lines = file_readlines(args.infile)
+    else:
+        lines = stdin_readlines()
     meta = parse_meta(lines)
     lines = filter_meta_lines(lines, meta)
     image_data = convert(lines, meta)
     write_image(image_data, args.outfile)
 
+def file_readlines(path):
+    with open(path, 'r') as f:
+        return f.readlines()
+
+def stdin_readlines():
+    lines = []
+    for line in sys.stdin:
+        lines.append(line)
+    return lines
+
 if __name__ == "__main__":
     parser = AP.ArgumentParser(description="Text to 2D image converter.")
     parser.add_argument("-o", "--outfile",
                         type=str, default="stdin.png",
-                        help="Output filename.")
+                        help="Output filename. Defaults to 'stdin.png'.")
+    parser.add_argument("-i", "--infile",
+                        type=str, default="",
+                        help="Input filename. Defaults to reading from stdin.")
     args = parser.parse_args()
     main(args)
