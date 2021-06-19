@@ -1,0 +1,24 @@
+#
+#!size 16 16
+#!a #000000FF
+#!b #00000000
+#!c #FF0000FF
+#!d #0000FFFF
+#!e #FFFF00FF
+#!f #00FF00FF
+aaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaa
+aabbbbbbbbbbbbcc
+aabbddbbbbeebbcc
+aabdeedbbbeebbcc
+aabdeedbbbeebbcc
+aabbddaaaaeebbcc
+aabbbbaffabbbbcc
+aabbbbaffabbbbcc
+aabbddaaaaeebbcc
+aabdeedbbbeebbcc
+aabdeedbbbeebbcc
+aabbddbbbbeebbcc
+aabbbbbbbbbbbbcc
+aaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaa
