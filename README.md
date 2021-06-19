@@ -1,6 +1,6 @@
 # txt2sprite
 
-Text to 2D image converter
+Text to 2D image (or image to text) converter.
 
 ## Advantages
 
@@ -17,22 +17,35 @@ See [example.txt](example.txt).
 
 1. Ensure `pipenv` is installed and use it to install dependencies:
 
-```
-pipenv install
-```
+    ```
+    pipenv install
+    ```
 
 2. Render a text file
 
-```
-pipenv run python . < example.txt
-```
+    ```
+    pipenv run python . < example.txt
+    ```
 
-or
+    or
+
+    ```
+    pipenv run python . -i example.txt
+    ```
+
+    The output is written to `stdin.png` (can be overridden with `-o` parameter):
+
+    ![Result](stdin.png)
+
+3. Convert an image to text format (mind the alphabet/color palette restrictions!)
+
+    ```
+    pipenv run python . -i stdin.png > out.txt
+    ```
+
+## Regression tests
 
 ```
-pipenv run python . -i example.txt
+pipenv install
+make test
 ```
-
-The output is written to `stdin.png` (can be overridden with `-o` parameter):
-
-![Result](stdin.png)
